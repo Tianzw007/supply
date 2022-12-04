@@ -4,8 +4,8 @@
       <van-dialog use-slot :show="isAuthorization" :showConfirmButton="false" :show-confirm-button="false" :z-index="99999999999">
         <div class="getUserInfo">
           <p>您还未允许微信登录授权，请点击下方按钮允许微信授权登录。</p>
-          <i-button type="primary" open-type="getUserInfo" i-class="cell-btn" shape="circle" @getuserinfo="getUserinfo">允许微信登录授权</i-button>
-          <i-button type="primary"  i-class="cell-btn" shape="circle" @click="cancelLogin">取消登录授权</i-button>
+          <i-button type="primary" open-type="getUserInfo" i-class="cell-btn" shape="circle" @click="getUserinfo">允许微信登录授权</i-button>
+<!--          <i-button type="primary"  i-class="cell-btn" shape="circle" @click="cancelLogin">取消登录授权</i-button>-->
         </div>
       </van-dialog>
     </div>
@@ -28,8 +28,10 @@
   export default {
     data() {
       return {
-        isAuthorization: false,
+        isAuthorization: true,
         code: null,
+        encrypted_data: null,
+        iv: null,
         user: null,
         jscodeRes: null,
         loading: false,
@@ -40,12 +42,35 @@
     },
     methods: {
       ...mapMutations(['setAccess_token','changeHomeActive']),
-      getUserinfo(data) {
-        this.user = data.mp.detail
-        this.isAuthorization = false
-        this.loading = true
-        this.getAccessToken()
+      getUserinfo(e) {
+        console.log("e")
+        console.log(e)
+        console.log("this.code")
+        console.log(this.code)
+
+        if (this.code) {
+          wx.getUserProfile({
+            desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+            success: (data) => {
+              // this.setData({
+              //   userInfo: data.userInfo,
+              //   hasUserInfo: true
+              // })
+              console.log("data")
+              console.log(data)
+              this.isAuthorization = false
+              this.loading = true
+              this.encrypted_data = data.encryptedData
+              this.iv = data.iv
+              this.getAccessToken()
+            }
+          })
+        } else {
+          console.log('获取用户登录失败：' + res.errMsg);
+        }
+
       },
+
       cancelLogin() {
         //console.log(44444)
         this.isAuthorization = false
@@ -56,24 +81,24 @@
         })
       },
 
-      /*   
-      
+      /*
+
       * @getAccessToken()
-      * 
+      *
       * @getAccessToken => 使用code换取 access_token
-      * 
+      *
       * @grant_type
       * @client_id
       * @client_secret
       * @encrypted_data
       * @iv
       * @code
-      * 
+      *
       * @then => 获取到 access_token， 存储到 store里
-      * 
-      * 
+      *
+      *
       * @catch =>
-      
+
       */
       getAccessToken() {
         console.log("getAccessToken")
@@ -81,16 +106,16 @@
           grant_type: 'password',
           client_id: 'f3d259ddd3ed8ff3843839b',
           client_secret: '4c7f6f8fa93d59c45502c0ae8c4a95b',
-          encrypted_data: this.user.encryptedData,
-          iv: this.user.iv,
+          encrypted_data: this.encrypted_data,
+          iv: this.iv,
           code: this.code
         })
         request.getAccessToken({
           grant_type: 'password',
           client_id: 'f3d259ddd3ed8ff3843839b',
           client_secret: '4c7f6f8fa93d59c45502c0ae8c4a95b',
-          encrypted_data: this.user.encryptedData,
-          iv: this.user.iv,
+          encrypted_data: this.encrypted_data,
+          iv: this.iv,
           code: this.code
         }).then((res) => {
           this.loading = false
@@ -112,12 +137,12 @@
         })
       },
 
-      /*   
+      /*
 
       * @Authorization()
-      * 
+      *
       * @getSetting => 判断是否获取过微信授权
-      * 
+      *
       * @success =>
       * 授权成功 @isAuthorization=true @getUserInfo 拿到用户信息 @getAccessToken
       * 授权失败 @isAuthorization=false 弹出授权窗口
@@ -160,10 +185,7 @@
       wx.login({
         success: (res) => {
           this.code = res.code;
-          console.log("code")
-          console.log(this.code)
           if (this.code) {
-            this.Authorization()
           } else {
             console.log('获取用户登录失败：' + res.errMsg);
           }

@@ -5,7 +5,7 @@ const { $Toast } = require("@/../static/iview/base/index");
 
 
 // export const host = 'https://app2.dayouqiantu.cn/'
-export const host = 'http://127.0.0.1:8009/'
+export const host = 'http://192.168.1.7:8009/'
 
 vue.prototype.$saveImg = function (imgSrc) {
   wx.downloadFile({

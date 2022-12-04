@@ -1,20 +1,20 @@
 <template>
   <div class="container home" v-if="homeList">
     <banner  :imgs="homeList.ads"></banner>
-    <div class="advantage">
-      <div class="advantage-item">
-        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />
-        <p>图文商城联盟</p>
-      </div>
-      <div class="advantage-item">
-        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />
-        <p>专注精品工艺</p>
-      </div>
-      <div class="advantage-item">
-        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />
-        <p>图文7大类专家</p>
-      </div>
-    </div>
+<!--    <div class="advantage">-->
+<!--      <div class="advantage-item">-->
+<!--        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />-->
+<!--        <p>图文商城联盟</p>-->
+<!--      </div>-->
+<!--      <div class="advantage-item">-->
+<!--        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />-->
+<!--        <p>专注精品工艺</p>-->
+<!--      </div>-->
+<!--      <div class="advantage-item">-->
+<!--        <img mode="widthFix" src="../../../static/images/advantage-pic.png" />-->
+<!--        <p>图文7大类专家</p>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="home-navigation">
       <div class="home-navigation-parcel" @click="changeHomeActive(1)">
         <div class="home-navigation-item">
@@ -35,20 +35,20 @@
         <!--</div>-->
       <!--</div>-->
     </div>
-    <div class="home-module">
-      <div class="home-module-header">
-        <p class="title">新品首发</p>
-        <p class="more" @click="changeMallActive('new_goods',1)">查看更多 ></p>
-      </div>
-      <div class="home-module-body">
-        <div class="new-products scroll-view-x">
-          <div class="new-product" @click="$router.push({ path: 'productInfo/productInfo', query: { goods_id: item.goodsId } })"
-            v-for="(item,index) in homeList.newGoods" :key="index">
-            <img mode="widthFix" :src="item.goodsLogo" />
-          </div>
-        </div>
-      </div>
-    </div>
+<!--    <div class="home-module">-->
+<!--      <div class="home-module-header">-->
+<!--        <p class="title">新品首发</p>-->
+<!--        <p class="more" @click="changeMallActive('new_goods',1)">查看更多 ></p>-->
+<!--      </div>-->
+<!--      <div class="home-module-body">-->
+<!--        <div class="new-products scroll-view-x">-->
+<!--          <div class="new-product" @click="$router.push({ path: 'productInfo/productInfo', query: { goods_id: item.goodsId } })"-->
+<!--            v-for="(item,index) in homeList.newGoods" :key="index">-->
+<!--            <img mode="widthFix" :src="item.goodsLogo" />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="home-module">
       <div class="home-module-header">
         <p class="title">精品推荐</p>
@@ -61,25 +61,25 @@
         </div>
       </div>
     </div>
-    <div class="home-module">
-      <div class="home-module-header">
-        <p class="title">专题精选</p>
-        <p class="more" @click="changeMallActive(null,3)" >查看更多 ></p>
-      </div>
-      <div class="home-module-body">
-        <div class="project-list">
-          <div class="project" v-for="(item,index) in homeList.newsList" :key="index" @click="$router.push({ path: 'projectInfo/projectInfo', query: { id: item.id } })">
-            <div class="project-pic">
-              <img mode="widthFix" class="product-controller-icon" :src="item.localUrl" />
-            </div>
-            <div class="project-info">
-              <p class="project-title">{{item.title}}</p>
-              <p class="project-describe">{{item.digest}}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!--    <div class="home-module">-->
+<!--      <div class="home-module-header">-->
+<!--        <p class="title">专题精选</p>-->
+<!--        <p class="more" @click="changeMallActive(null,3)" >查看更多 ></p>-->
+<!--      </div>-->
+<!--      <div class="home-module-body">-->
+<!--        <div class="project-list">-->
+<!--          <div class="project" v-for="(item,index) in homeList.newsList" :key="index" @click="$router.push({ path: 'projectInfo/projectInfo', query: { id: item.id } })">-->
+<!--            <div class="project-pic">-->
+<!--              <img mode="widthFix" class="product-controller-icon" :src="item.localUrl" />-->
+<!--            </div>-->
+<!--            <div class="project-info">-->
+<!--              <p class="project-title">{{item.title}}</p>-->
+<!--              <p class="project-describe">{{item.digest}}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="edit-specifications-modal"></div>
     <i-toast id="toast" />
   </div>

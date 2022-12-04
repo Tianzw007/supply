@@ -7,8 +7,10 @@ package co.yixiang.app.modular.auth.controller;
 
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
+import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import co.yixiang.app.common.R;
 import co.yixiang.app.common.persistence.model.StoreMember;
 import co.yixiang.app.modular.member.service.IMemberService;
@@ -39,7 +41,7 @@ import java.util.Set;
 @Api(value = "认证授权模块", tags = "认证授权模块", description = "认证授权模块")
 public class AuthController {
     private final IMemberService memberService;
-    private final WxMaService wxService;
+    private final WxMaService wxService = getWxMaService();
     private final SecurityManager securityManager;
 
 
@@ -54,8 +56,8 @@ public class AuthController {
     @PostMapping("/oauth/access_token")
     @ApiOperation(value = "获取token",notes = "获取token")
     public R loginReturnToken(@Validated @RequestBody LoginVO loginVO) {
-        Boolean isProduct = false; //true 开启真实小程序环境
-        String openid = "orIMY4xGhMmipwFZoSL1vOhUNFZ0";
+        Boolean isProduct = true; //true 开启真实小程序环境
+        String openid = "";
         WxMaUserInfo userInfo = null;
         try{
             if(isProduct){
@@ -70,6 +72,7 @@ public class AuthController {
                 // 解密用户信息
                 userInfo = wxService.getUserService()
                         .getUserInfo(sessionKey, loginVO.getEncrypted_data(), loginVO.getIv());
+                userInfo.setOpenId(session.getOpenid());
 
             }
 
@@ -104,4 +107,16 @@ public class AuthController {
 
 
     }
+
+    private WxMaService getWxMaService() {
+        WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
+        config.setAppid("wxef9c0127d2f5f3b6");
+        config.setSecret("c3ba2774d1776c51a25c7608f8d801cf");
+        config.setMsgDataFormat("JSON");
+        WxMaService wxMaService = new WxMaServiceImpl();
+        wxMaService.setWxMaConfig(config);
+        return wxMaService;
+    }
+
+
 }

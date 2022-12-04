@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div v-if="!isAuthorization">
+      <authorization></authorization>
     </div>
     <div class="view-item" :class="{'view-item-active':homeActive==0}">
       <home></home>
@@ -25,19 +26,19 @@
         title="分类"></i-tab-bar-item>
       <i-tab-bar-item key="2" :count="cartList&&cartList.length>0?cartList.length:0" img="../../../static/images/icon-jinhuo.png"
         current-img="../../../static/images/icon-jinhuo-active.png" title="进货单"></i-tab-bar-item>
-      <i-tab-bar-item key="3" img="../../../static/images/icon-zhuanti.png" current-img="../../../static/images/icon-zhuanti-active.png"
-        title="专题"></i-tab-bar-item>
+<!--      <i-tab-bar-item key="3" img="../../../static/images/icon-zhuanti.png" current-img="../../../static/images/icon-zhuanti-active.png"-->
+<!--        title="专题"></i-tab-bar-item>-->
       <i-tab-bar-item key="4" img="../../../static/images/icon-me.png" current-img="../../../static/images/icon-me-active.png"
         title="我的"></i-tab-bar-item>
     </i-tab-bar>
-    <div v-if="!isAuthorization">
-      <van-dialog use-slot :show="!isAuthorization" :showConfirmButton="false" :show-confirm-button="false" :z-index="99999999999">
-        <div class="getUserInfo">
-          <p>您还未允许微信登录授权，请点击下方按钮允许微信授权登录。</p>
-          <i-button type="primary" open-type="getUserInfo" i-class="cell-btn" shape="circle">允许微信登录授权</i-button>
-        </div>
-      </van-dialog>
-    </div>
+<!--    <div v-if="!isAuthorization">-->
+<!--      <van-dialog use-slot :show="!isAuthorization" :showConfirmButton="false" :show-confirm-button="false" :z-index="99999999999">-->
+<!--        <div class="getUserInfo">-->
+<!--          <p>您还未允许微信登录授权，请点击下方按钮允许微信授权登录。</p>-->
+<!--          <i-button type="primary" open-type="getUserInfo" i-class="cell-btn" shape="circle">允许微信登录授权</i-button>-->
+<!--        </div>-->
+<!--      </van-dialog>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -52,6 +53,7 @@
   import shoppingCart from "@/pages/shoppingCart/shoppingCart";
   import project from "@/pages/project/project";
   import my from "@/pages/my/my";
+  import authorization from "./authorization/authorization";
   // 依赖
   import api from "@/api/api";
   import request from "@/api/request";
@@ -61,6 +63,7 @@
   } from '@/utils/index'
   export default {
     components: {
+      authorization,
       home,
       classification,
       shoppingCart,
@@ -69,7 +72,7 @@
     },
     data() {
       return {
-        isAuthorization: true
+        isAuthorization: false
       }
     },
     computed: {
