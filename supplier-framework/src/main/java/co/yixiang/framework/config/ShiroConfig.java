@@ -280,7 +280,9 @@ public class ShiroConfig
         // 不需要拦截的访问
         filterChainDefinitionMap.put("/login", "anon,captchaValidate");
         // 不需要拦截的访问
-        filterChainDefinitionMap.put("/captchaImage", "anon");
+        filterChainDefinitionMap.put("/mobile/captchaImage", "anon");
+        // 不需要拦截的访问
+        filterChainDefinitionMap.put("/mobile/getInfo", "anon");
         // 注册相关
         filterChainDefinitionMap.put("/register", "anon,captchaValidate");
         // 系统权限列表
