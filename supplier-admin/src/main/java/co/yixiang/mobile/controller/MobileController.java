@@ -2,12 +2,17 @@ package co.yixiang.mobile.controller;
 
 import co.yixiang.common.config.RuoYiConfig;
 import co.yixiang.common.core.domain.AjaxResult;
+import co.yixiang.common.core.domain.entity.SysMenu;
+import co.yixiang.common.core.domain.entity.SysUser;
+import co.yixiang.common.utils.ShiroUtils;
 import co.yixiang.common.utils.StringUtils;
 import co.yixiang.common.utils.uuid.IdUtils;
 import co.yixiang.mobile.model.LoginBody;
 import co.yixiang.mobile.redis.RedisCache;
+import co.yixiang.mobile.service.SysPermissionService;
 import co.yixiang.mobile.utils.sign.Base64;
 import co.yixiang.system.service.ISysConfigService;
+import co.yixiang.system.service.ISysMenuService;
 import com.google.code.kaptcha.Producer;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -22,6 +27,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -49,10 +55,16 @@ public class MobileController {
     private Producer captchaProducerMath;
 
     @Autowired
+    private ISysMenuService menuService;
+
+    @Autowired
     private RedisCache redisCache;
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private SysPermissionService permissionService;
 
 
     /**
@@ -143,15 +155,18 @@ public class MobileController {
     @GetMapping("/getInfo")
     public AjaxResult getInfo()
     {
-        Subject user = SecurityUtils.getSubject();
-//        // 角色集合
-//        Set<String> roles = permissionService.getRolePermission(user);
-//        // 权限集合
-//        Set<String> permissions = permissionService.getMenuPermission(user);
+        // 取身份信息
+        SysUser user = ShiroUtils.getSysUser();
+//        // 根据用户id取出菜单
+//        List<SysMenu> menus = menuService.selectMenusByUser(user);
+        // 角色集合
+        Set<String> roles = permissionService.getRolePermission(user);
+        // 权限集合
+        Set<String> permissions = permissionService.getMenuPermission(user);
         AjaxResult ajax = success();
-        ajax.put("user", user.toString());
-//        ajax.put("roles", roles);
-//        ajax.put("permissions", permissions);
+        ajax.put("user", user);
+        ajax.put("roles", roles);
+        ajax.put("permissions", permissions);
         return ajax;
     }
 
