@@ -2,9 +2,6 @@
   <view class="container">
     <view class="example">
       <uni-forms ref="form" :model="user" labelWidth="80px">
-        <uni-forms-item label="用户昵称" name="nickName">
-          <uni-easyinput v-model="user.nickName" placeholder="请输入昵称" />
-        </uni-forms-item>
         <uni-forms-item label="手机号码" name="phonenumber">
           <uni-easyinput v-model="user.phonenumber" placeholder="请输入手机号码" />
         </uni-forms-item>
@@ -28,7 +25,6 @@
     data() {
       return {
         user: {
-          nickName: "",
           phonenumber: "",
           email: "",
           sex: ""

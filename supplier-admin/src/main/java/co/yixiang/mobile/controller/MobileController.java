@@ -1,24 +1,30 @@
 package co.yixiang.mobile.controller;
 
+import co.yixiang.common.annotation.Log;
 import co.yixiang.common.config.RuoYiConfig;
+import co.yixiang.common.constant.UserConstants;
 import co.yixiang.common.core.domain.AjaxResult;
 import co.yixiang.common.core.domain.entity.SysMenu;
 import co.yixiang.common.core.domain.entity.SysUser;
+import co.yixiang.common.enums.BusinessType;
 import co.yixiang.common.utils.ShiroUtils;
 import co.yixiang.common.utils.StringUtils;
 import co.yixiang.common.utils.uuid.IdUtils;
+import co.yixiang.mobile.constant.Constants;
 import co.yixiang.mobile.model.LoginBody;
 import co.yixiang.mobile.redis.RedisCache;
 import co.yixiang.mobile.service.SysPermissionService;
 import co.yixiang.mobile.utils.sign.Base64;
 import co.yixiang.system.service.ISysConfigService;
 import co.yixiang.system.service.ISysMenuService;
+import co.yixiang.system.service.ISysUserService;
 import com.google.code.kaptcha.Producer;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +71,9 @@ public class MobileController {
 
     @Autowired
     private SysPermissionService permissionService;
+
+    @Autowired
+    private ISysUserService userService;
 
 
     /**
@@ -134,7 +143,9 @@ public class MobileController {
         try
         {
             subject.login(token);
-            return success();
+            AjaxResult success = success();
+            success.put(Constants.TOKEN, token);
+            return success;
         }
         catch (AuthenticationException e)
         {
@@ -170,5 +181,49 @@ public class MobileController {
         return ajax;
     }
 
+    /**
+     * 个人信息
+     */
+    @GetMapping("/user/profile")
+    public AjaxResult profile(ModelMap mmap)
+    {
+        SysUser user = ShiroUtils.getSysUser();
+        AjaxResult ajax = AjaxResult.success(user);
+        ajax.put("roleGroup", userService.selectUserRoleGroup(user.getUserId()));
+        ajax.put("postGroup", userService.selectUserPostGroup(user.getUserId()));
+        return ajax;
+    }
+
+    /**
+     * 修改用户
+     */
+    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/user/profile")
+    public AjaxResult updateProfile(@RequestBody SysUser user)
+    {
+        SysUser sysUser = ShiroUtils.getSysUser();
+        user.setUserName(sysUser.getUserName());
+        if (StringUtils.isNotEmpty(user.getPhonenumber())
+                && UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
+        {
+            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+        }
+        if (StringUtils.isNotEmpty(user.getEmail())
+                && UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
+        {
+            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+        }
+        user.setUserId(sysUser.getUserId());
+        user.setPassword(null);
+        user.setAvatar(null);
+        user.setDeptId(null);
+        user.setUpdateBy(ShiroUtils.getLoginName());
+        return toAjax(userService.updateUser(user));
+    }
+
+    protected AjaxResult toAjax(int rows)
+    {
+        return rows > 0 ? success() : error();
+    }
 
 }
