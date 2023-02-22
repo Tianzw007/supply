@@ -168,8 +168,6 @@ public class MobileController {
     {
         // 取身份信息
         SysUser user = ShiroUtils.getSysUser();
-//        // 根据用户id取出菜单
-//        List<SysMenu> menus = menuService.selectMenusByUser(user);
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
@@ -218,12 +216,15 @@ public class MobileController {
         user.setAvatar(null);
         user.setDeptId(null);
         user.setUpdateBy(ShiroUtils.getLoginName());
-        return toAjax(userService.updateUser(user));
-    }
-
-    protected AjaxResult toAjax(int rows)
-    {
-        return rows > 0 ? success() : error();
+        if(userService.updateUser(user)>0){
+            // 更新缓存用户信息
+            sysUser.setPhonenumber(user.getPhonenumber());
+            sysUser.setEmail(user.getEmail());
+            sysUser.setSex(user.getSex());
+            ShiroUtils.setSysUser(sysUser);
+            return success();
+        }
+        return error();
     }
 
 }
