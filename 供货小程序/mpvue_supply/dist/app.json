@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/index",
+    "pages/authorization/authorization",
+    "pages/productInfo/productInfo",
+    "pages/projectInfo/projectInfo",
+    "pages/collection/collection",
+    "pages/address/address",
+    "pages/addressEdit/addressEdit",
+    "pages/setPayPassword/setPayPassword",
+    "pages/productList/productList",
+    "pages/settlement/settlement",
+    "pages/coupons/coupons",
+    "pages/orderList/orderList",
+    "pages/exchange/exchange",
+    "pages/orderInfo/orderInfo",
+    "pages/paySuccess/paySuccess",
+    "pages/wallet/wallet",
+    "pages/integral/integral",
+    "pages/recharge/recharge",
+    "pages/rechargeType/rechargeType",
+    "pages/substitutingInfo/substitutingInfo",
+    "pages/substitutingEdit/substitutingEdit",
+    "pages/substituting/substituting",
+    "pages/certification/certification",
+    "pages/evaluation/evaluation"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  }
+}
