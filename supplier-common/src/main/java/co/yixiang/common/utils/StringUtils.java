@@ -420,30 +420,34 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
         ArrayList a0 = (ArrayList) al0.get(0);// l1
         ArrayList result = new ArrayList();// 组合的结果
-        for (int i = 1; i < al0.size(); i++) {
-            ArrayList a1 = (ArrayList) al0.get(i);
-            ArrayList temp = new ArrayList();
-            // 每次先计算两个集合的笛卡尔积，然后用其结果再与下一个计算
-            for (int j = 0; j < a0.size(); j++) {
-                for (int k = 0; k < a1.size(); k++) {
-                    ArrayList cut = new ArrayList();
+        if(al0.size()==1){
+            result.add(al0.get(0));
+        } else {
+            for (int i = 1; i < al0.size(); i++) {
+                ArrayList a1 = (ArrayList) al0.get(i);
+                ArrayList temp = new ArrayList();
+                // 每次先计算两个集合的笛卡尔积，然后用其结果再与下一个计算
+                for (int j = 0; j < a0.size(); j++) {
+                    for (int k = 0; k < a1.size(); k++) {
+                        ArrayList cut = new ArrayList();
 
-                    if (a0.get(j) instanceof ArrayList) {
-                        cut.addAll((ArrayList) a0.get(j));
-                    } else {
-                        cut.add(a0.get(j));
+                        if (a0.get(j) instanceof ArrayList) {
+                            cut.addAll((ArrayList) a0.get(j));
+                        } else {
+                            cut.add(a0.get(j));
+                        }
+                        if (a1.get(k) instanceof ArrayList) {
+                            cut.addAll((ArrayList) a1.get(k));
+                        } else {
+                            cut.add(a1.get(k));
+                        }
+                        temp.add(cut);
                     }
-                    if (a1.get(k) instanceof ArrayList) {
-                        cut.addAll((ArrayList) a1.get(k));
-                    } else {
-                        cut.add(a1.get(k));
-                    }
-                    temp.add(cut);
                 }
-            }
-            a0 = temp;
-            if (i == al0.size() - 1) {
-                result = temp;
+                a0 = temp;
+                if (i == al0.size() - 1) {
+                    result = temp;
+                }
             }
         }
         return result;
