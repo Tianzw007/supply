@@ -98,7 +98,7 @@
                     }
 
                    // ajaxGetAttrInput(type_id);
-                    ajaxGetSpecInput();
+                    ajaxGetSpecInput(type_id);
 
                 }
             },'json');
@@ -121,7 +121,7 @@
         /**
          *  点击商品规格触发下面输入框显示
          */
-        function ajaxGetSpecInput() {
+        function ajaxGetSpecInput(type_id) {
             var spec_arr = [];// 用户选择的规格数组
 
             var jsonObj = {};
@@ -146,6 +146,7 @@
             var goods_id = $("input[name='goodsId']").val();
             jsonObj.list = spec_arr;
             jsonObj.goodsId = goods_id;
+            jsonObj.typeId = type_id;
             //console.log(spec_arr);
             //console.log(spec_arr);
             //console.log(JSON.stringify(spec_arr));

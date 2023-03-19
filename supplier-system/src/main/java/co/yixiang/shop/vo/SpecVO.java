@@ -10,10 +10,20 @@ import java.util.List;
 public class SpecVO {
     private String goodsId;
 
+    private String typeId;
+
     private List<String> list;
 
     public String getGoodsId() {
         return goodsId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeId() {
+        return typeId;
     }
 
     public void setGoodsId(String goodsId) {
@@ -32,6 +42,7 @@ public class SpecVO {
     public String toString() {
         return "SpecVO{" +
                 "goodsId='" + goodsId + '\'' +
+                "typeId='" + typeId + '\'' +
                 ", list=" + list +
                 '}';
     }
