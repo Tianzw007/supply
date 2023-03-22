@@ -1,102 +1,166 @@
 <template>
-  <view class="box">
-              <t-table border="2" border-color="#95b99e" :is-check="true" @change="change">
-                  <t-tr font-size="14" color="#95b99e" align="left">
-                      <t-th align="left">姓名</t-th>
-                      <t-th align="left">年龄</t-th>
-                      <t-th align="left">爱好</t-th>
-                      <t-th align="center">操作</t-th>
-                  </t-tr>
-                  <t-tr font-size="12" color="#5d6f61" align="right" v-for="item in tableList" :key="item.id">
-                      <t-td align="left">{{ item.name }}</t-td>
-                      <t-td align="left">{{ item.age }}</t-td>
-                      <t-td align="left">{{ item.hobby }}</t-td>
-                      <t-td align="left"><button @click="edit(item)">编辑</button></t-td>
-                  </t-tr>
-              </t-table>
-          </view>
-      </view>
+	<view>
+		<view class="uni-container">
+			<uni-table ref="table" :loading="loading" border>
+				<uni-tr>
+					<uni-th align="center">订单编号</uni-th>
+					<uni-th align="center">用户信息</uni-th>
+					<uni-th align="center">订单状态</uni-th>
+					<uni-th align="center">商品信息</uni-th>
+					<uni-th align="center">订单总价</uni-th>
+					<uni-th align="center">下单时间</uni-th>
+					<uni-th align="center">操作</uni-th>
+				</uni-tr>
+				<uni-tr v-for="(item, index) in tableData" :key="index">
+					<uni-td>{{ item.orderSn }}</uni-td>
+					<uni-td>{{ item.consignee }}</uni-td>
+					<uni-td>{{ item.orderStatusStr }}</uni-td>
+					<uni-td align="center" style="white-space: pre-wrap;" >{{ showorder(item.storeOrderGoods) }}</uni-td>
+					<uni-td>{{ item.orderAmount }}</uni-td>
+					<uni-td>{{ item.addTime }}</uni-td>
+					<uni-td>
+						<view class="uni-group">
+							<button class="uni-button" size="mini" type="primary">修改</button>
+							<button class="uni-button" size="mini" type="warn">删除</button>
+						</view>
+					</uni-td>
+				</uni-tr>
+			</uni-table>
+			<view class="uni-pagination-box">
+				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="total"
+					@change="change" />
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
-import tTable from '@/components/t-table/t-table.vue';
-    import tTh from '@/components/t-table/t-th.vue';
-    import tTr from '@/components/t-table/t-tr.vue';
-    import tTd from '@/components/t-table/t-td.vue';
-    export default {
-        components: {
-            tTable,
-            tTh,
-            tTr,
-            tTd
-        },
-        data() {
-            return {
-                tableList: [{
-                        id: 0,
-                        name: '张三',
-                        age: '19',
-                        hobby: '游泳'
-                    },
-                    {
-                        id: 1,
-                        name: '李四',
-                        age: '21',
-                        hobby: '绘画'
-                    },
-                    {
-                        id: 2,
-                        name: '王二',
-                        age: '29',
-                        hobby: '滑板'
-                    },
-                    {
-                        id: 3,
-                        name: '码字',
-                        age: '20',
-                        hobby: '蹦极'
-                    }
-                ]
-            };
-        },
-        methods: {
-            change(e) {
-                console.log(e.detail);
-            },
-            edit(item) {
-                uni.showToast({
-                    title: item.name,
-                    icon: 'none'
-                });
-            }
-        }
-    };
+	import tableData from '@/pages/order/taebleData.js'
+	import {
+		getOrder
+	} from '@/api/order.js'
+	export default {
+		data() {
+			return {
+				searchVal: '',
+				tableData: [],
+				// 每页数据量
+				pageSize: 10,
+				// 当前页
+				pageCurrent: 1,
+				// 数据总量
+				total: 0,
+				loading: false
+			}
+		},
+		onLoad() {
+			this.selectedIndexs = []
+			this.getData(1)
+		},
+		methods: {
+			// // 多选处理
+			// selectedItems() {
+			// 	return this.selectedIndexs.map(i => this.tableData[i])
+			// },
+			// // 多选
+			// selectionChange(e) {
+			// 	console.log(e.detail.index)
+			// 	this.selectedIndexs = e.detail.index
+			// },
+			//显示订单详情
+			showorder(value) {
+				var str = '';
+				for (var p in value) {
+					str += value[p].goodsName + "(" + value[p].specKeyName + ")\n";
+				}
+				return str;
+			},
+
+			//批量删除
+			delTable() {
+				console.log(this.selectedItems())
+			},
+			// 分页触发
+			change(e) {
+				this.$refs.table.clearSelection()
+				this.selectedIndexs.length = 0
+				this.getData(e.current)
+			},
+			// 搜索
+			search() {
+				this.getData(1, this.searchVal)
+			},
+			// 获取数据
+			getData(pageCurrent, value = '') {
+				this.loading = true
+				this.pageCurrent = pageCurrent
+				// this.request({
+				// 	pageSize: this.pageSize,
+				// 	pageCurrent: pageCurrent,
+				// 	value: value,
+				// 	success: res => {
+				// 		// console.log('data', res);
+				// 		this.tableData = res.data
+				// 		this.total = res.total
+				// 		this.loading = false
+				// 	}
+				// });
+				getOrder({
+					pageSize: this.pageSize,
+					pageCurrent: pageCurrent,
+				}).then(res => {
+					console.log(res);
+					this.tableData = res.rows
+					this.total = res.total
+					this.loading = false
+				})
+			},
+			// 伪request请求
+			request(options) {
+				const {
+					pageSize,
+					pageCurrent,
+					success,
+					value
+				} = options
+				let total = tableData.length
+				let data = tableData.filter((item, index) => {
+					const idx = index - (pageCurrent - 1) * pageSize
+					return idx < pageSize && idx >= 0
+				})
+				if (value) {
+					data = []
+					tableData.forEach(item => {
+						if (item.name.indexOf(value) !== -1) {
+							data.push(item)
+						}
+					})
+					total = data.length
+				}
+
+				setTimeout(() => {
+					typeof success === 'function' &&
+						success({
+							data: data,
+							total: total
+						})
+				}, 500)
+			}
+		}
+	}
 </script>
 
 <style>
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+	<style>
 
-  .logo {
-    height: 200rpx;
-    width: 200rpx;
-    margin-top: 200rpx;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 50rpx;
-  }
-
-  .text-area {
-    display: flex;
-    justify-content: center;
-  }
-
-  .title {
-    font-size: 36rpx;
-    color: #8f8f94;
-  }
+	/* #ifndef H5 */
+	/* page {
+  	padding-top: 85px;
+  } */
+	/* #endif */
+	.uni-group {
+		display: flex;
+		align-items: center;
+	}
+</style>
 </style>
