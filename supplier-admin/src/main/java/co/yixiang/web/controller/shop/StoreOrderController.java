@@ -2,16 +2,14 @@ package co.yixiang.web.controller.shop;
 
 import java.util.List;
 
+import co.yixiang.shop.domain.StoreOrderGoods;
+import co.yixiang.shop.service.IStoreOrderGoodsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import co.yixiang.common.annotation.Log;
 import co.yixiang.common.enums.BusinessType;
 import co.yixiang.shop.domain.StoreOrder;
@@ -35,6 +33,9 @@ public class StoreOrderController extends BaseController
 
     @Autowired
     private IStoreOrderService storeOrderService;
+
+    @Autowired
+    private IStoreOrderGoodsService storeOrderGoodsService;
 
     @RequiresPermissions("shop:order:view")
     @GetMapping()
@@ -110,6 +111,95 @@ public class StoreOrderController extends BaseController
         List<StoreOrder> list = storeOrderService.selectStoreOrderList(storeOrder);
         return getDataTable(list);
     }
+
+    /**
+     * 查询订单主列表
+     */
+    @RequiresPermissions("shop:order:listMobile")
+    @PostMapping("/listMobile")
+    @ResponseBody
+    public TableDataInfo listMobile(@RequestBody StoreOrder storeOrder)
+    {
+        startPage();
+        if(storeOrder.getOrderStatus() != null){
+            switch (storeOrder.getOrderStatus()){
+                case -1:
+                    storeOrder.setDeleted(1);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setPayStatus(0);
+                    storeOrder.setShippingStatus(0);
+                    break;
+                case 0:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setPayStatus(0);
+                    storeOrder.setShippingStatus(0);
+                    break;
+                case 1:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setShippingStatus(0);
+                    break;
+                case 2:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setShippingStatus(1);
+                    break;
+                case 3:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setShippingStatus(2);
+                    break;
+                case 4:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(0);
+                    storeOrder.setShippingStatus(3);
+                    break;
+                case 5:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(1);
+                    storeOrder.setShippingStatus(0);
+                    break;
+                case 6:
+                    storeOrder.setDeleted(0);
+                    storeOrder.setPayStatus(1);
+                    storeOrder.setOrderStatus(2);
+                    storeOrder.setShippingStatus(0);
+                    break;
+
+            }
+        }
+
+        //System.out.println(storeOrder);
+        List<StoreOrder> list = storeOrderService.selectStoreOrderList(storeOrder);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询订单主列表
+     */
+    @RequiresPermissions("shop:order:getStoreOrder")
+    @PostMapping("/getStoreOrder")
+    @ResponseBody
+    public TableDataInfo getStoreOrder(@RequestBody StoreOrder storeOrder)
+    {
+        startPage();
+        //System.out.println(storeOrder);
+        StoreOrderGoods orderGoods = new StoreOrderGoods();
+        if(storeOrder.getOrderId()!=null){
+            orderGoods.setOrderId(storeOrder.getOrderId());
+            List<StoreOrderGoods> orderGoodsList = storeOrderGoodsService
+                    .selectStoreOrderGoodsList(orderGoods);
+            return getDataTable(orderGoodsList);
+        }
+        return getDataTable(null);
+    }
+
 
     /**
      * 导出订单主列表

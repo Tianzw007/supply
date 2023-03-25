@@ -9,3 +9,12 @@ export function getOrder(data) {
 	data
   })
 }
+
+// 获取订单信息
+export function getStoreOrder(data) {
+  return request({
+    'url': '/shop/order/getStoreOrder',
+    'method': 'post',
+	data
+  })
+}

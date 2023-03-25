@@ -70,6 +70,11 @@
     "style": {
       "navigationBarTitleText": "浏览文本"
     }
+  }, {
+    "path": "pages/order/changeIndex",
+    "style": {
+      "navigationBarTitleText": "编辑单价"
+    }
   }],
   "tabBar": {
     "color": "#000000",
