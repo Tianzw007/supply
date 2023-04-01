@@ -15,13 +15,14 @@
 					<uni-td>{{ item.orderSn }}</uni-td>
 					<uni-td>{{ item.consignee }}</uni-td>
 					<!-- <uni-td>{{ item.orderStatusStr }}</uni-td> -->
-					<uni-td align="center" style="white-space: pre-wrap;" >{{ showorder(item.storeOrderGoods) }}</uni-td>
+					<uni-td align="center" style="white-space: pre-wrap;">{{ showorder(item.storeOrderGoods) }}</uni-td>
 					<uni-td>{{ item.orderAmount }}</uni-td>
 					<uni-td>{{ item.addTime }}</uni-td>
-					<uni-td width="150">
+					<uni-td>
 						<view class="uni-group">
-							<button class="uni-button" size="mini" type="primary" @click="goTo(item.orderId)">修改</button>
-							<button class="uni-button" size="mini" type="warn" @click="">删除</button>
+							<button class="uni-button" size="mini" type="primary"
+								@click="goTo(item.orderId)">修改</button>
+							<!-- <button class="uni-button" size="mini" type="warn" @click="">删除</button> -->
 						</view>
 					</uni-td>
 				</uni-tr>
@@ -56,6 +57,12 @@
 		onLoad() {
 			this.selectedIndexs = []
 			this.getData(1)
+		},
+		onPullDownRefresh() {
+			this.getData(1)
+			setTimeout(function() {
+				uni.stopPullDownRefresh();
+			}, 500);
 		},
 		methods: {
 			// // 多选处理
@@ -115,13 +122,13 @@
 					this.loading = false
 				})
 			},
-			goTo(id){
-				 this.$router.push(
-				 {
-					 path:'/pages/order/changeIndex',
-					 query:{id:id},
-				 }
-				);
+			goTo(id) {
+				this.$router.push({
+					path: '/pages/order/changeIndex',
+					query: {
+						id: id
+					},
+				});
 			},
 			// 伪request请求
 			request(options) {
