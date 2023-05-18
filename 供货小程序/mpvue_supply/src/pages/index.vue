@@ -171,9 +171,7 @@
         width: 25px;
         height: 25px;
       }
-    }
-
-    .tab-bar-pic-active {}
+    }，
 
     text {
       font-size: 10px;

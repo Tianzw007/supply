@@ -11,7 +11,8 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "enhance": true
+    "enhance": true,
+    "condition": false
   },
   "miniprogramRoot": "dist/",
   "compileType": "miniprogram",
