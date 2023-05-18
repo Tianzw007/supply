@@ -274,7 +274,7 @@ public class GoodsServiceImpl extends ServiceImpl<StoreGoodsMapper, StoreGoods> 
     @Override
     public List<CartDTO> cartList(PageVO pageVO, int userId) {
         QueryWrapper<StoreCart> cartQueryWrapper = new QueryWrapper<>();
-        cartQueryWrapper.eq("user_id",userId).groupBy("goods_id");
+        cartQueryWrapper.eq("user_id",userId).groupBy("id");
         Page<StoreCart> pageModel = new Page<>(pageVO.getPage(), pageVO.getLimit());
         IPage<StoreCart> storeCarts = storeCartMapper
                 .selectPage(pageModel,cartQueryWrapper);
